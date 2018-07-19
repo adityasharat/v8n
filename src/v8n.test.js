@@ -110,8 +110,7 @@ describe("execution functions", () => {
         .minLength(2)
         .not.asyncRule("Hello");
 
-      return expect(validation.testAsync("Hello")).rejects.toEqual({
-        cause: "Rule failed",
+      return expect(validation.testAsync("Hello")).rejects.toMatchObject({
         rule: validation.chain[1],
         value: "Hello"
       });
