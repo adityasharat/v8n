@@ -682,6 +682,36 @@ describe("random tests", () => {
   });
 });
 
+describe("the 'some' modifer", () => {
+  test("should return 'false' if an empty array is tested", () => {
+    const is = v8n().some.number().even();
+    expect(is.test([])).toBeFalsy();
+  });
+  test("should return 'true' if some values pass the test", () => {
+    const is = v8n().some.number().even();
+    expect(is.test([1, 2, 3])).toBeTruthy();
+  });
+  test("should return 'false' if all values do not pass the test", () => {
+    const is = v8n().some.number().even();
+    expect(is.test([1])).toBeFalsy();
+  });
+});
+
+describe("the 'every' modifer", () => {
+  test("should return 'true' if an empty array is tested", () => {
+    const is = v8n().every.number().even();
+    expect(is.test([])).toBeTruthy();
+  });
+  test("should return 'true' if every value pass the test", () => {
+    const is = v8n().every.number().even();
+    expect(is.test([2, 4, 6])).toBeTruthy();
+  });
+  test("should return 'false' if even one value do not pass the test", () => {
+    const is = v8n().every.number().even();
+    expect(is.test([2, 4, 7, 8])).toBeFalsy();
+  });
+});
+
 function debugRules(validation) {
   return validation.chain.map(ruleId);
 }
