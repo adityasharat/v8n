@@ -190,13 +190,21 @@ const core = {
    * @returns {boolean} true for valid and false for invalid
    */
   test(value) {
+    const validate = (val) => {
     return this.chain.every(rule => {
       try {
-        return rule.fn(value) !== rule.invert;
+          return rule.fn(val) !== rule.invert;
       } catch (ex) {
         return rule.invert;
       }
     });
+    };
+
+    if (this.iterator) {
+      return Array.prototype[this.iterator].call(value, v => validate(v));
+    } else {
+      return validate(value);
+    }
   },
 
   /**
@@ -296,6 +304,49 @@ const modifiers = {
    */
   not() {
     this.invert = true;
+  },
+
+  /**
+   * Modifier for validating some elements of an array
+   * 
+   * All the rules are applied iteratively the elements of the array
+   * being tested. If and only if at least one element passes all the
+   * applied rules then {@link core.test test} will return {@code true}
+   * else it will return {@link false}.
+   * 
+   * @property
+   * @example
+   * 
+   * // This will return `true` as `2` is an even number
+   * // and satifies the rules applied.
+   * v8n()
+   *   .some.number()
+   *   .even()
+   *   .test([2, 3, 4]);
+   */
+  some() {
+    this.iterator = "some"; 
+  },
+
+  /**
+   * Modifier for validating every elements of an array
+   * 
+   * All the rules are applied iteratively the elements of the array
+   * being tested. If and only if every element passes all the
+   * applied rules then {@link core.test test} will return {@code true}
+   * else it will return {@link false}.
+   * 
+   * @property
+   * @example
+   * 
+   * // This will return `false` as `3` is not an even number
+   * v8n()
+   *   .every.number()
+   *   .even()
+   *   .test([2, 3, 4]);
+   */
+  every() {
+    this.iterator = "every";
   }
 };
 
